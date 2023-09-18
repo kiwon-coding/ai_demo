@@ -3,6 +3,8 @@ import openai
 import os
 
 if __name__ == '__main__':
+    st.set_page_config(page_title="Product Description Generator")
+
     st.title("Product Description Generator")
 
     api_key_input = st.text_input("OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY") or st.session_state.get("OPENAI_API_KEY", ""))
