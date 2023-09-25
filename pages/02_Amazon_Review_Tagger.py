@@ -47,8 +47,8 @@ def get_taggings(review_text, openai_api_key):
 
     return tags
 
-def load_review_tags():
-    review_tags = pd.read_csv('./data/amazon_fashion_review_tags.csv')
+def load_review_tags(file_path):
+    review_tags = pd.read_csv(file_path)
     return review_tags
 
 def show_reviews(item):
@@ -112,9 +112,17 @@ if __name__ == '__main__':
         reviews = load_review_data()
         st.write(reviews)
 
-        with st.spinner("making tags.."):
-            reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
-        reviews.to_csv('./data/amazon_fashion_review_tags.csv', index=False)
+        tag_file_path = './data/amazon_fashion_review_tags.csv'
+        if not os.path.exists(tag_file_path):
+            print("not exist")
+            with st.spinner("making tags.."):
+                reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
+            reviews.to_csv(tag_file_path, index=False)
+        else:
+            print("exist")
+            review_tags = load_review_tags(tag_file_path)
+            st.write(review_tags)
+    
         
 
     # tqdm.pandas()
@@ -123,6 +131,7 @@ if __name__ == '__main__':
     
     # all_tags = {}
     # review_tags = load_review_tags()
+    # st.write(review_tags)
     # tag_column_df = review_tags['tags'].apply(ast.literal_eval)
     # for tags in tag_column_df:
     #     for tag in tags:
