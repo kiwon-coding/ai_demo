@@ -51,6 +51,42 @@ def load_review_tags(file_path):
     review_tags = pd.read_csv(file_path)
     return review_tags
 
+def show_reviews_df(df):
+    css = """
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+
+            table.dataframe {
+                font-size: 16px;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            table.dataframe th, table.dataframe td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            table.dataframe th {
+                background-color: #f2f2f2;
+            }
+
+            table.dataframe tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            table.dataframe tr:hover {
+                background-color: #ddd;
+            }
+        </style>
+    """
+
+    st.write(css, unsafe_allow_html=True)  # CSS 코드를 적용
+    st.dataframe(df)
+
 def show_reviews(item):
     custom_css = """
         <style>
@@ -143,7 +179,7 @@ if __name__ == '__main__':
                 selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
                 # st.write(selected_reviews)
                 # print(selected_reviews)
-                show_reviews(selected_reviews)
+                show_reviews_df(selected_reviews)
 
 
     # print(dict(sorted(all_tags.items())))
