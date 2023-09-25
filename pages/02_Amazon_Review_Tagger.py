@@ -110,40 +110,40 @@ if __name__ == '__main__':
     openai_api_key = st.session_state.get("OPENAI_API_KEY")
     if openai_api_key:
         reviews = load_review_data()
-        st.write(reviews)
+        # st.write(reviews)
 
-        if st.button("Get tags"):
-            tag_file_path = './data/amazon_fashion_review_tags.csv'
-            if not os.path.exists(tag_file_path):
-                st.write("not exist")
-                with st.spinner("making tags.."):
-                    reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
-                reviews.to_csv(tag_file_path, index=False)
-            else:
-                st.write("exist")
-                review_tags = load_review_tags(tag_file_path)
-                all_tags = {}
-                tag_column_df = review_tags['tags'].apply(ast.literal_eval)
-                for tags in tag_column_df:
-                    for tag in tags:
-                        all_tags[tag] = all_tags.get(tag, 0) + 1
-                st.write(all_tags)
-        
-                selected_tags = st.multiselect(
-                    'Select tags to filter reviews', all_tags)
-                # sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
-                # major_keywords = list(sorted_tags.keys())[:10]
-                # selected_tags = st.multiselect(
-                #     'Select tags to filter reviews', major_keywords)
-                
-                # show reviews containing selected tags
-                # 1) find matching reviews (containing at least one tag in its tags)
-                # 2) show the reviews (st.write(reviewText), st.divider())
-                if len(selected_tags) > 0:
-                    selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
-                    st.write(selected_reviews)
-                    # print(selected_reviews)
-                    # show_reviews(selected_reviews)
+        # if st.button("Get tags"):
+        tag_file_path = './data/amazon_fashion_review_tags.csv'
+        if not os.path.exists(tag_file_path):
+            st.write("not exist")
+            with st.spinner("making tags.."):
+                reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
+            reviews.to_csv(tag_file_path, index=False)
+        else:
+            st.write("exist")
+            review_tags = load_review_tags(tag_file_path)
+            all_tags = {}
+            tag_column_df = review_tags['tags'].apply(ast.literal_eval)
+            for tags in tag_column_df:
+                for tag in tags:
+                    all_tags[tag] = all_tags.get(tag, 0) + 1
+            st.write(all_tags)
+    
+            selected_tags = st.multiselect(
+                'Select tags to filter reviews', all_tags)
+            # sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
+            # major_keywords = list(sorted_tags.keys())[:10]
+            # selected_tags = st.multiselect(
+            #     'Select tags to filter reviews', major_keywords)
+            
+            # show reviews containing selected tags
+            # 1) find matching reviews (containing at least one tag in its tags)
+            # 2) show the reviews (st.write(reviewText), st.divider())
+            if len(selected_tags) > 0:
+                selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
+                st.write(selected_reviews)
+                # print(selected_reviews)
+                # show_reviews(selected_reviews)
 
 
     # print(dict(sorted(all_tags.items())))
