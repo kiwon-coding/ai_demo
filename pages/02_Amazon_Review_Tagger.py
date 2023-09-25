@@ -123,15 +123,9 @@ if __name__ == '__main__':
                 st.write("exist")
                 review_tags = load_review_tags(tag_file_path)
                 st.write(review_tags)
+
+            st.write("hello")
     
-    a = st.empty()
-    a.text("hello")
-    a.text("bye")
-
-    with st.empty():
-        st.write("hello")        
-        st.write("bye")
-
     # tqdm.pandas()
     # reviews['tags'] = reviews.progress_apply(lambda x: get_taggings(x['reviewText']), axis=1)
     # reviews.to_csv('./data/amazon_fashion_review_tags.csv', index=False)
