@@ -122,22 +122,14 @@ if __name__ == '__main__':
             else:
                 st.write("exist")
                 review_tags = load_review_tags(tag_file_path)
-                st.write(review_tags)
-
-            st.write("hello")
+                all_tags = {}
+                tag_column_df = review_tags['tags'].apply(ast.literal_eval)
+                for tags in tag_column_df:
+                    for tag in tags:
+                        all_tags[tag] = all_tags.get(tag, 0) + 1
+                st.write(all_tags)
+        
     
-    # tqdm.pandas()
-    # reviews['tags'] = reviews.progress_apply(lambda x: get_taggings(x['reviewText']), axis=1)
-    # reviews.to_csv('./data/amazon_fashion_review_tags.csv', index=False)
-    
-    # all_tags = {}
-    # review_tags = load_review_tags()
-    # st.write(review_tags)
-    # tag_column_df = review_tags['tags'].apply(ast.literal_eval)
-    # for tags in tag_column_df:
-    #     for tag in tags:
-    #         all_tags[tag] = all_tags.get(tag, 0) + 1
-    # # print(all_tags)
 
     # # print(dict(sorted(all_tags.items())))
     # # print(dict(sorted(all_tags.items(), key=lambda item: item[1])))
