@@ -47,6 +47,7 @@ def get_taggings(review_text, openai_api_key):
 
     return tags
 
+@st.cache_data
 def load_review_tags(file_path):
     review_tags = pd.read_csv(file_path)
     return review_tags
