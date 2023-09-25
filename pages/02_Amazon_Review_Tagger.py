@@ -16,7 +16,7 @@ import streamlit as st
 
 @st.cache_data
 def load_review_data():
-    json_file_path = './data/amazon_fashion_5.json'
+    json_file_path = './data/amazon_fashion_20.json'
     with open(json_file_path, 'r') as f:
         json_data = [json.loads(line) for line in f]
 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         # st.write(reviews)
 
         # if st.button("Get tags"):
-        tag_file_path = './data/amazon_fashion_review_tags.csv'
+        tag_file_path = './data/amazon_fashion_20_tags.csv'
         if not os.path.exists(tag_file_path):
             with st.spinner("generating tags.."):
                 reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
