@@ -129,17 +129,28 @@ if __name__ == '__main__':
                         all_tags[tag] = all_tags.get(tag, 0) + 1
                 st.write(all_tags)
         
-    
+                sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
+                major_keywords = list(sorted_tags.keys())[:10]
+                selected_tags = st.multiselect(
+                    'Select tags to filter reviews', major_keywords)
+                
+                # show reviews containing selected tags
+                # 1) find matching reviews (containing at least one tag in its tags)
+                # 2) show the reviews (st.write(reviewText), st.divider())
+                if len(selected_tags) > 0:
+                    selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
+                    # print(selected_reviews)
+                    show_reviews(selected_reviews)
 
-    # # print(dict(sorted(all_tags.items())))
-    # # print(dict(sorted(all_tags.items(), key=lambda item: item[1])))
 
-    # sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
-    # # st.write(f"\# of reviews: {len(review_tags)}")
-    # # print(sorted_tags.items())
+    # print(dict(sorted(all_tags.items())))
+    # print(dict(sorted(all_tags.items(), key=lambda item: item[1])))
+
+    # st.write(f"\# of reviews: {len(review_tags)}")
+    # print(sorted_tags.items())
     # major_keywords = list(sorted_tags.keys())[:10]
     # selected_tags = st.multiselect('Select tags to filter reviews', major_keywords)
-    # # st.write("You selected:", selected_tags)
+    # st.write("You selected:", selected_tags)
 
 
     # # all_tags = [tag for tags in tag_column_df for tag in tags]
