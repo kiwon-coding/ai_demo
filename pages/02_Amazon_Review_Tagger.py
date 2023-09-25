@@ -115,13 +115,13 @@ if __name__ == '__main__':
         # if st.button("Get tags"):
         tag_file_path = './data/amazon_fashion_review_tags.csv'
         if not os.path.exists(tag_file_path):
-            st.write("not exist")
-            with st.spinner("making tags.."):
+            with st.spinner("generating tags.."):
                 reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
             reviews.to_csv(tag_file_path, index=False)
         else:
-            st.write("exist")
-            review_tags = load_review_tags(tag_file_path)
+            with st.spinner("loading existing tags.."):
+                review_tags = load_review_tags(tag_file_path)
+
             all_tags = {}
             tag_column_df = review_tags['tags'].apply(ast.literal_eval)
             for tags in tag_column_df:
@@ -141,9 +141,9 @@ if __name__ == '__main__':
             # 2) show the reviews (st.write(reviewText), st.divider())
             if len(selected_tags) > 0:
                 selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
-                st.write(selected_reviews)
+                # st.write(selected_reviews)
                 # print(selected_reviews)
-                # show_reviews(selected_reviews)
+                show_reviews(selected_reviews)
 
 
     # print(dict(sorted(all_tags.items())))
