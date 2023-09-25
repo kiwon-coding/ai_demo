@@ -90,12 +90,12 @@ if __name__ == '__main__':
                     all_tags[tag] = all_tags.get(tag, 0) + 1
             # st.write(all_tags)
     
-            # sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
-            # major_keywords = list(sorted_tags.keys())[:10]
+            sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
+            major_keywords = list(sorted_tags.keys())[:10]
+            # selected_tags = st.multiselsect(
+            #     'Select tags to filter reviews', all_tags)
             selected_tags = st.multiselect(
-                'Select tags to filter reviews', all_tags)
-            # selected_tags = st.multiselect(
-            #     'Select tags to filter reviews', major_keywords)
+                'Select tags to filter reviews', major_keywords)
             
             # show reviews containing selected tags
             # 1) find matching reviews (containing at least one tag in its tags)
