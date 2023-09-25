@@ -139,8 +139,9 @@ if __name__ == '__main__':
                 # 2) show the reviews (st.write(reviewText), st.divider())
                 if len(selected_tags) > 0:
                     selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
+                    st.write(selected_reviews)
                     # print(selected_reviews)
-                    show_reviews(selected_reviews)
+                    # show_reviews(selected_reviews)
 
 
     # print(dict(sorted(all_tags.items())))
