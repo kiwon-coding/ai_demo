@@ -88,54 +88,14 @@ def show_reviews_df(df):
     st.dataframe(df)
 
 def show_reviews(item):
-    custom_css = """
-        <style>
-            .review-card {
-                border: 1px solid #e1e1e1;
-                border-radius: 5px;
-                padding: 10px;
-                margin-bottom: 15px;
-                background-color: #f9f9f9;
-            }
-            .reviewer-info {
-                font-size: 14px;
-                color: #4f4f4f;
-            }
-            .review-text {
-                font-size: 16px;
-                color: #000;
-                margin-top: 10px;
-            }
-            .product-image {
-                max-width: 150px;
-                margin-top: 10px;
-            }
-        </style>
-        """
-    st.write(custom_css, unsafe_allow_html=True)
-
     for i, row in item.iterrows():
-        st.markdown(f'<div class="review-card">', unsafe_allow_html=True)
         st.write(f"**Overall Score:** {row['overall']}")
-
-        if row['verified']:
-            st.write("Verified Purchase")
-        else:
-            st.write("Non-Verified Purchase")
-
-        st.write(f"**Written Date:** {row['reviewTime']}")
-        st.write(f"**Reviewer ID:** {row['reviewerID']}")
         st.write(f"**Product ID:** {row['asin']}")
         st.write(f"**Reviewer Name:** {row['reviewerName']}")
-
-        st.markdown('<hr>', unsafe_allow_html=True)
-
         st.write(f"**Review Text:**")
-        st.markdown(
-            f'<div class="review-text">{row["reviewText"]}</div>', unsafe_allow_html=True)
-
+        st.write(f"{row['reviewText']}")
         st.write(f"**Tags:** {row['tags']}")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<hr>', unsafe_allow_html=True)
 
 if __name__ == '__main__':
     api_key_input = st.text_input("OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY") or st.session_state.get("OPENAI_API_KEY", ""))
@@ -163,44 +123,19 @@ if __name__ == '__main__':
             for tags in tag_column_df:
                 for tag in tags:
                     all_tags[tag] = all_tags.get(tag, 0) + 1
-            st.write(all_tags)
+            # st.write(all_tags)
     
-            selected_tags = st.multiselect(
-                'Select tags to filter reviews', all_tags)
             # sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
             # major_keywords = list(sorted_tags.keys())[:10]
+            selected_tags = st.multiselect(
+                'Select tags to filter reviews', all_tags)
             # selected_tags = st.multiselect(
             #     'Select tags to filter reviews', major_keywords)
             
             # show reviews containing selected tags
             # 1) find matching reviews (containing at least one tag in its tags)
-            # 2) show the reviews (st.write(reviewText), st.divider())
+            # 2) show the reviews
             if len(selected_tags) > 0:
                 selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
                 # st.write(selected_reviews)
-                # print(selected_reviews)
-                show_reviews_df(selected_reviews)
-
-
-    # print(dict(sorted(all_tags.items())))
-    # print(dict(sorted(all_tags.items(), key=lambda item: item[1])))
-
-    # st.write(f"\# of reviews: {len(review_tags)}")
-    # print(sorted_tags.items())
-    # major_keywords = list(sorted_tags.keys())[:10]
-    # selected_tags = st.multiselect('Select tags to filter reviews', major_keywords)
-    # st.write("You selected:", selected_tags)
-
-
-    # # all_tags = [tag for tags in tag_column_df for tag in tags]
-    # # print(tag_list)
-
-    # # st.write(review_tags.head())
-
-    # # show reviews containing selected tags
-    # # 1) find matching reviews (containing at least one tag in its tags)
-    # # 2) show the reviews (st.write(reviewText), st.divider())
-    # if len(selected_tags) > 0:
-    #     selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
-    #     # print(selected_reviews)
-    #     show_reviews(selected_reviews)
+                show_reviews(selected_reviews)
