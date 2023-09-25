@@ -115,16 +115,22 @@ if __name__ == '__main__':
         if st.button("Get tags"):
             tag_file_path = './data/amazon_fashion_review_tags.csv'
             if not os.path.exists(tag_file_path):
-                print("not exist")
+                st.write("not exist")
                 with st.spinner("making tags.."):
                     reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
                 reviews.to_csv(tag_file_path, index=False)
             else:
-                print("exist")
+                st.write("exist")
                 review_tags = load_review_tags(tag_file_path)
                 st.write(review_tags)
     
-        
+    a = st.empty()
+    a.text("hello")
+    a.text("bye")
+
+    with st.empty():
+        st.write("hello")        
+        st.write("bye")
 
     # tqdm.pandas()
     # reviews['tags'] = reviews.progress_apply(lambda x: get_taggings(x['reviewText']), axis=1)
