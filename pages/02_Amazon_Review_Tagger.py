@@ -54,6 +54,7 @@ def load_review_tags(file_path):
 
 def show_reviews(item):
     for i, row in item.iterrows():
+        st.write("Review No: ", i)
         st.write(f"**Overall Score:** {row['overall']}")
         st.write(f"**Product ID:** {row['asin']}")
         st.write(f"**Reviewer Name:** {row['reviewerName']}")
