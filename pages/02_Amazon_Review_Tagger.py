@@ -10,7 +10,6 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate
 )
 
-from tqdm import tqdm 
 import ast
 import streamlit as st
 
@@ -31,7 +30,8 @@ def parse_string_to_list(string_data):
         print("Error parsing string:", e)
         return []
 
-def get_taggings(review_text, openai_api_key):
+@st.cache_resource
+def set_openai_config(openai_api_key):
     chat = ChatOpenAI(openai_api_key = openai_api_key)
 
     template = "A tagging system that creates tags for use in an online shopping mall."
@@ -41,10 +41,12 @@ def get_taggings(review_text, openai_api_key):
     chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
 
     chain = LLMChain(llm=chat, prompt=chat_prompt)
+    return chain
+
+
+def get_taggings(review_text, chain):
     res = chain.run(text = review_text)
-
     tags = parse_string_to_list(res)
-
     return tags
 
 @st.cache_data
@@ -65,36 +67,33 @@ def show_reviews(item):
 
 if __name__ == '__main__':
     api_key_input = st.text_input("OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY") or st.session_state.get("OPENAI_API_KEY", ""))
-    api_key_button = st.button("Add")
+    api_key_button = st.button("Set OpenAI Key")
     if api_key_button:
         st.session_state["OPENAI_API_KEY"] = api_key_input
 
     openai_api_key = st.session_state.get("OPENAI_API_KEY")
     if openai_api_key:
+        chain = set_openai_config(openai_api_key)
         reviews = load_review_data()
-        # st.write(reviews)
-
-        # if st.button("Get tags"):
+        
         tag_file_path = './data/amazon_fashion_20_tags.csv'
         if not os.path.exists(tag_file_path):
             with st.spinner("generating tags.."):
-                reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], openai_api_key), axis=1)
+                reviews['tags'] = reviews.apply(lambda x: get_taggings(x['reviewText'], chain), axis=1)
             reviews.to_csv(tag_file_path, index=False)
         else:
             with st.spinner("loading existing tags.."):
                 review_tags = load_review_tags(tag_file_path)
 
+            # creating a dictionary of tags and select the major tags
             all_tags = {}
             tag_column_df = review_tags['tags'].apply(ast.literal_eval)
             for tags in tag_column_df:
                 for tag in tags:
                     all_tags[tag] = all_tags.get(tag, 0) + 1
-            # st.write(all_tags)
-    
+            
             sorted_tags = dict(sorted(all_tags.items(), key=lambda item: item[1], reverse=True))
             major_keywords = list(sorted_tags.keys())[:10]
-            # selected_tags = st.multiselsect(
-            #     'Select tags to filter reviews', all_tags)
             selected_tags = st.multiselect(
                 'Select tags to filter reviews', major_keywords)
             
@@ -103,5 +102,4 @@ if __name__ == '__main__':
             # 2) show the reviews
             if len(selected_tags) > 0:
                 selected_reviews = review_tags[review_tags['tags'].apply(lambda x: all(tag in x for tag in selected_tags))]
-                # st.write(selected_reviews)
                 show_reviews(selected_reviews)
