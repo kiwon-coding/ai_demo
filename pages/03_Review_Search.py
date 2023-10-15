@@ -68,7 +68,8 @@ if __name__ == "__main__":
 
         df = load_review_data()
         product_list = df['asin'].unique()
-        product_id = st.selectbox(product_list)
+        print(product_list)
+        product_id = st.selectbox("Select a product", product_list)
         if product_id:
             question = st.text_input("Ask any question about the selected product.")
             answer, source = get_answer(llm, product_id, question)
