@@ -15,6 +15,8 @@ from langchain.prompts.chat import (
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 
+from utils import set_openai_api_key
+
 @st.cache_data
 def load_review_data():
     json_file_path = './data/amazon_fashion_5.json'
@@ -41,8 +43,8 @@ def prepare():
         print("==============")
 
 @st.cache_resource
-def set_openapi_config(openai_api_key):
-    llm = ChatOpenAI(openai_api_key = openai_api_key)
+def set_openapi_config():
+    llm = ChatOpenAI(openai_api_key=st.session_state.get("OPENAI_API_KEY"))
     return llm
 
 def get_answer(llm, product_id, question):
@@ -57,21 +59,15 @@ if __name__ == "__main__":
         st.write("preparing..")
         prepare()
 
-    api_key_input = st.text_input("OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY") or st.session_state.get("OPENAI_API_KEY", ""))
-    api_key_button = st.button("Set OpenAI Key")
-    if api_key_button:
-        st.session_state["OPENAI_API_KEY"] = api_key_input
+    set_openai_api_key()
+    llm = set_openapi_config()
 
-    openai_api_key = st.session_state.get("OPENAI_API_KEY")
-    if openai_api_key:
-        llm = set_openapi_config(openai_api_key)
-
-        df = load_review_data()
-        product_list = df['asin'].unique()
-        print(product_list)
-        product_id = st.selectbox("Select a product", product_list)
-        if product_id:
-            question = st.text_input("Ask any question about the selected product.")
-            answer, source = get_answer(llm, product_id, question)
-            st.write(answer)
-            st.write(source)
+    df = load_review_data()
+    product_list = df['asin'].unique()
+    print(product_list)
+    product_id = st.selectbox("Select a product", product_list)
+    if product_id:
+        question = st.text_input("Ask any question about the selected product.")
+        answer, source = get_answer(llm, product_id, question)
+        st.write(answer)
+        st.write(source)
