@@ -5,6 +5,12 @@ import os
 from langchain.document_loaders import PyPDFLoader
 
 def file_selector(folder_path='.'):
+    st.write(folder_path)
+    for f in os.listdir(folder_path):
+        st.write(f)
+
+    st.write("done")
+
     files = [f for f in os.listdir(
         folder_path) if os.path.isfile(f) and f.endswith(".pdf")]
     st.write(files)
