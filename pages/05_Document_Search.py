@@ -7,6 +7,7 @@ from langchain.document_loaders import PyPDFLoader
 def file_selector(folder_path='.'):
     files = [f for f in os.listdir(
         folder_path) if os.path.isfile(f) and f.endswith(".pdf")]
+    st.write(files)
     selected_filename = st.selectbox('Select a file', files)
     return os.path.join(folder_path, selected_filename)
 
