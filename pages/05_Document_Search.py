@@ -4,26 +4,17 @@ import os
 
 from langchain.document_loaders import PyPDFLoader
 
-def file_selector(folder_path='.'):
-    st.write("file_selector()")
-
-    st.write(folder_path)
-    for f in os.listdir(folder_path):
-        st.write(f)
-
-    st.write("done")
-
+def file_selector():
+    folder_path = "data"
     files = [f for f in os.listdir(
-        folder_path) if os.path.isfile(f) and f.endswith(".pdf")]
-    st.write(files)
+        folder_path) if os.path.isfile(os.path.join(folder_path, f)) and f.endswith(".pdf")]
     selected_filename = st.selectbox('Select a file', files)
     return os.path.join(folder_path, selected_filename)
 
 if __name__ == "__main__":
     # set_openai_api_key()
-    filepath = file_selector('data')
-    st.write(filepath)
-
+    filepath = file_selector()
+    
     if filepath:
         filename_full = filepath
         filename = filename_full.split('.')[0]
@@ -31,3 +22,4 @@ if __name__ == "__main__":
         with st.spinner('Loading...'):
             # Step 1: LOAD: document loading (txt, web, pdf)
             raw_documents = PyPDFLoader(filename_full).load_and_split()
+            st.write(raw_documents)
