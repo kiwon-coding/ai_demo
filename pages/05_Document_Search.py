@@ -13,6 +13,7 @@ def file_selector(folder_path='.'):
 if __name__ == "__main__":
     # set_openai_api_key()
     filepath = file_selector('data')
+    st.write(filepath)
 
     if filepath:
         filename_full = filepath
