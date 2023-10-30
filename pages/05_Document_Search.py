@@ -44,7 +44,7 @@ if __name__ == "__main__":
         # Step 4: RETRIEVE & Generate
         question = st.text_input("Enter your question about the file.")
         if question:
-            llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+            llm = ChatOpenAI(openai_api_key=st.session_state.get("OPENAI_API_KEY"))
             qa_chain = RetrievalQA.from_chain_type(
                 llm, retriever=db.as_retriever())
             res = qa_chain({"query": question})
