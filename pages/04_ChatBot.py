@@ -10,10 +10,8 @@ from langchain.prompts.chat import (
 )
 
 from langchain.memory import ConversationBufferWindowMemory
-# from langchain.prompts import MessagesPlaceholder
-from utils import set_openai_api_key
-
 from langchain.callbacks.base import BaseCallbackHandler
+from utils import set_openai_api_key
 
 class StreamHandler(BaseCallbackHandler):
     def __init__(self, streamlit_container):
@@ -45,6 +43,7 @@ def set_langchain_config():
     return chain
 
 if __name__ == "__main__":
+    set_openai_api_key()
     chain = set_langchain_config()
 
     # chat
